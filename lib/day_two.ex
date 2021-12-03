@@ -1,20 +1,33 @@
 defmodule DayTwo do
   @moduledoc false
 
-  def read_file_calculate_product_of_position(file_name) do
+  def process_commands_with_aim(file_name) do
     file_name
     |> Utilities.read_file_to_list_of_strings()
-    |> process_commands
+    |> Enum.map(&parse/1)
+    |> Enum.reduce({0,0,0}, &move/2)
+    |> Tuple.delete_at(2)
     |> Tuple.product
   end
 
-  def process_commands(list) do
-    list
-    |> Enum.map(&parse/1)
-    |> Enum.reduce({0,0}, &move/2)
+  def move({h,a}, {h_pos,d_pos,aim}) do
+    {h_pos+h, d_pos+(aim*h), aim+a}
   end
 
-  def move({h_pos,d_pos}, {h,d}), do: {h_pos+h, d_pos+d}
+  def read_file_calculate_product_of_position(file_name) do
+    file_name
+    |> Utilities.read_file_to_list_of_strings()
+    |> process_commands_incremental
+    |> Tuple.product
+  end
+
+  def process_commands_incremental(list) do
+    list
+    |> Enum.map(&parse/1)
+    |> Enum.reduce({0,0}, &move_incremental/2)
+  end
+
+  def move_incremental({h_pos,d_pos}, {h,d}), do: {h_pos+h, d_pos+d}
 
   def parse(string) do
     string
