@@ -13,15 +13,66 @@ defmodule DayThreeTest do
   [x] build gamma and epsilon from least, most common
 
   [ ] generate life support rating
-  [ ]
+  pick O2 generator rating
+  [ ] pick by most common bit in column 0, then 1, then 2
+  [ ] for life support if same count use '1'
+  pick CO2 scrubber rating
+  [ ] pick by least common bit in column 1, then 2, then 3
+  [ ] for CO2 scrubber if same count use '0'
+
+
+  [ ] get most common bit list
+  [x] parse string to int and group by column bit
   """
+
+
+  test "get oxygen generator from file" do
+    "priv/day_three_test_input.txt"
+    |> Utilities.read_file_to_list_of_strings()
+    |> binary_strings_to_int
+    |> get_oxygen_generator_rating(4)
+    |> assert_equals(23)
+  end
+
+
+  test "get oxygen generator from" do
+    ["11111","11110","00000"]
+    |> binary_strings_to_int
+    |> get_oxygen_generator_rating(4)
+    |> assert_equals(31)
+  end
+
+
+  test "string list to int" do
+    assert binary_strings_to_int(["100", "11", "0110"]) == [4, 3, 6]
+  end
+
+  test "group by column bit" do
+    assert group_by_column_bit([16,24,26,14],4) == [{1,[16, 24, 26]}, {0, [14]}]
+    assert group_by_column_bit([16,14,1],4) == [{0, [14,1]}, {1,[16]}]
+    assert group_by_column_bit([1,3,4],0) == [{1, [1,3]}, {0,[4]}]
+
+  end
+
+  defp assert_equals(actual, expected) do
+    assert actual == expected
+  end
+
+  defp assert_map_equal(actual, expected) do
+    assert is_map(actual)
+    assert Map.keys(expected) == Map.keys(actual)
+    assert expected == actual
+  end
+
+
+
+
 
   test "part 1 output" do
     x = power_consumption_from_file("priv/day_three_input.txt")
     "day three part one power #{x}\n"
     |> IO.puts
   end
-
 
   test "get product from file" do
     assert power_consumption_from_file("priv/day_three_test_input.txt") == 198
