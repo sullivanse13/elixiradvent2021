@@ -6,6 +6,9 @@ defmodule DayFourTest do
   TDD todo list
   [ ]
 
+  [x] play for loss
+  [x] find last winning card
+
 
   [x] reduce cards to winner from moves
   [x] calculate score from unmarked * winning number
@@ -22,17 +25,53 @@ defmodule DayFourTest do
   @winning_card [[{10, :o}, {2, :o}], [{11, :x}, {4, :x}]]
   @one_stamp_card [[{10, :o}, {2, :o}], [{11, :x}, {4, :o}]]
 
+  test "process until last card wins" do
+    test = """
+    1,2,3,4,5,6
+
+    1 2
+    3 4
+
+    1 4
+    2 8
+
+    1 6
+    8 9
+    """
+    |> String.split(~r/\n\n/, trim: true)
+    |> Enum.map(&String.trim/1)
+    |> parse_string_groups
+
+    assert process_draws_to_last_card_win(test) ==
+           {6, [
+               [{1, :x}, {6, :x}],
+               [{8, :o}, {9, :o}],
+               [{1, :x}, {8, :o}],
+               [{6, :x}, {9, :o}]
+             ]
+           }
+  end
+
+  test "play part 2 for loss" do
+    play_for_loss("priv/day_four_input.txt")
+    |> then(fn score -> "Last winning score for part 2: #{score}\n" end)
+    |> IO.puts()
+  end
+
+
+  test "find worst card" do
+    assert play_for_loss("priv/day_four_test_input.txt") == 1924
+  end
 
   test "play_for_win game part 1 with squid" do
     play_for_win("priv/day_four_input.txt")
     |> then(fn score -> "Winning score for part 1: #{score}\n" end)
-    |> IO.puts
+    |> IO.puts()
   end
 
   test "play_for_win game until winner" do
     assert play_for_win("priv/day_four_test_input.txt") == 4512
   end
-
 
   test "parse input" do
     [numbers | cards] = parse_input("priv/day_four_test_input.txt")

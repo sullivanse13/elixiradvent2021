@@ -1,28 +1,48 @@
 defmodule DayFour do
   @moduledoc false
 
+  def play_for_loss(file_name) do
+    file_name
+    |> parse_input
+    |> process_draws_to_last_card_win
+    |> calc_winning_score
+  end
+
+  def process_draws_to_last_card_win([draws | cards]) do
+    draws
+    |> Enum.reduce_while(cards,
+        fn draw, cards ->
+          stamped_cards = Enum.map(cards, fn card ->stamp(card, draw) end)
+          case stamped_cards do
+            [last] -> if is_winner?(last) do
+                        {:halt, {draw, last}}
+                      else
+                        {:cont, [last]}
+                      end
+            ^stamped_cards -> {:cont, Enum.reject(stamped_cards, &is_winner?/1)}
+          end
+        end)
+  end
 
   def play_for_win(file_name) do
     file_name
     |> parse_input
     |> process_draws_to_winner
     |> calc_winning_score
-
   end
 
   def process_draws_to_winner([draws | cards]) do
     draws
-    |> Enum.reduce_while(cards, &process_draw/2)
+    |> Enum.reduce_while(cards, &process_draw_for_win/2)
   end
 
-  def process_draw(draw,cards) do
+  def process_draw_for_win(draw, cards) do
     cards
     |> Enum.map(fn card -> stamp(card, draw) end)
-    |> process_stamped(draw)
+    |> process_stamped_for_win(draw)
   end
 
-
-  def process_stamped(stamped_cards, draw) do
+  def process_stamped_for_win(stamped_cards, draw) do
     case find_winner(stamped_cards) do
       [] -> {:cont, stamped_cards}
       [winning_card] -> {:halt, {draw, winning_card}}
@@ -30,21 +50,20 @@ defmodule DayFour do
   end
 
   def calc_winning_score({draw, card}) do
-    card_sum = card
-    |> Enum.take(5)
-    |> List.flatten
-    |> Enum.map(fn
-      {n,:o} -> n
-      {_,:x} -> 0
-    end)
-    |> Enum.sum
+    card_sum =
+      card
+      |> Enum.take(5)
+      |> List.flatten()
+      |> Enum.map(fn
+        {n, :o} -> n
+        {_, :x} -> 0
+      end)
+      |> Enum.sum()
 
     card_sum * draw
   end
 
-  def parse_input(file_name) do
-    [numbers | cards] = Utilities.read_file_into_groups(file_name)
-
+  def parse_string_groups([numbers | cards]) do
     draw = numbers |> String.split(",") |> Enum.map(&String.to_integer/1)
 
     parsed_cards =
@@ -53,6 +72,11 @@ defmodule DayFour do
       |> Enum.map(&setup_card/1)
 
     [draw | parsed_cards]
+  end
+
+  def parse_input(file_name) do
+    Utilities.read_file_into_groups(file_name)
+    |> parse_string_groups
   end
 
   def parse_card(card_string) do
