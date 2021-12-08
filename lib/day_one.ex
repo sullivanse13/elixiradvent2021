@@ -1,7 +1,6 @@
 defmodule DayOne do
   @moduledoc false
 
-
   def count_sliding_sum_increases_from_file(file_name) do
     file_name
     |> read_file_to_integer_list
@@ -17,7 +16,7 @@ defmodule DayOne do
 
   def create_sliding_sum(list) do
     list
-    |> Enum.chunk_every(3,1,:discard)
+    |> Enum.chunk_every(3, 1, :discard)
     |> Enum.map(&Enum.sum/1)
   end
 
@@ -27,12 +26,9 @@ defmodule DayOne do
     |> count_increasing
   end
 
-
-
   def count_increasing(list) do
     list
     |> Enum.zip(tl(list))
-    |> Enum.count(fn {x,y} -> x < y end)
+    |> Enum.count(fn {x, y} -> x < y end)
   end
-
 end
