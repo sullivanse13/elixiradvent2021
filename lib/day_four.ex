@@ -2,7 +2,7 @@ defmodule DayFour do
   @moduledoc false
 
 
-  def play(file_name) do
+  def play_for_win(file_name) do
     file_name
     |> parse_input
     |> process_draws_to_winner
@@ -12,16 +12,22 @@ defmodule DayFour do
 
   def process_draws_to_winner([draws | cards]) do
     draws
-    |> Enum.reduce_while(cards, fn draw, cards ->
-      stamped_cards = Enum.map(cards, fn card -> stamp(card, draw) end)
-      case find_winner(stamped_cards) do
-        [] -> {:cont, stamped_cards}
-        [winning_card] -> {:halt, {draw, winning_card}}
-      end
-    end)
+    |> Enum.reduce_while(cards, &process_draw/2)
+  end
+
+  def process_draw(draw,cards) do
+    cards
+    |> Enum.map(fn card -> stamp(card, draw) end)
+    |> process_stamped(draw)
   end
 
 
+  def process_stamped(stamped_cards, draw) do
+    case find_winner(stamped_cards) do
+      [] -> {:cont, stamped_cards}
+      [winning_card] -> {:halt, {draw, winning_card}}
+    end
+  end
 
   def calc_winning_score({draw, card}) do
     card_sum = card

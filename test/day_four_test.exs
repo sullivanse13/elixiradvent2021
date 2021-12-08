@@ -23,14 +23,14 @@ defmodule DayFourTest do
   @one_stamp_card [[{10, :o}, {2, :o}], [{11, :x}, {4, :o}]]
 
 
-  test "play game part 1 with squid" do
-    play("priv/day_four_input.txt")
+  test "play_for_win game part 1 with squid" do
+    play_for_win("priv/day_four_input.txt")
     |> then(fn score -> "Winning score for part 1: #{score}\n" end)
     |> IO.puts
   end
 
-  test "play game until winner" do
-    assert play("priv/day_four_test_input.txt") == 4512
+  test "play_for_win game until winner" do
+    assert play_for_win("priv/day_four_test_input.txt") == 4512
   end
 
 
