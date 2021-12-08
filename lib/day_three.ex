@@ -2,33 +2,50 @@ defmodule DayThree do
   @moduledoc false
   use Bitwise
 
-  def get_oxygen_generator_rating([x], _), do: x
-  def get_oxygen_generator_rating(int_list, -1), do: int_list |> hd
-  def get_oxygen_generator_rating(int_list, bit_column) do
-    int_list
-    |> group_by_column_bit(bit_column)
-    |> pick_most_common_or_one
-    |> get_oxygen_generator_rating(bit_column-1)
+
+
+  def get_life_support_rating(file_name) do
+
+    file_input = file_name |> Utilities.read_file_to_list_of_strings() |> Enum.to_list
+
+    bit_width = file_input |> hd |> String.length
+
+    diagnostic = file_input |> binary_strings_to_int
+
+    get_co2_scrubber_rating(diagnostic, bit_width)
+      * get_oxygen_generator_rating(diagnostic, bit_width)
   end
 
-  def pick_most_common_or_one([{_, list}]), do: list
-  def pick_most_common_or_one([{most_common, mc_list}, {_, lc_list}]) do
-    case length(mc_list) == length(lc_list) do
-      false -> mc_list
-      true -> if most_common == 1 do
-                mc_list
-              else
-                lc_list
-              end
-    end
+
+  def get_rating([x],_,_), do: x
+  def get_rating(int_list, bit_column, func) do
+    int_list
+    |> group_by_column_bit(bit_column)
+    |> Enum.sort_by(func)
+    |> hd
+    |> elem(1)
+    |> get_rating(bit_column-1, func)
   end
+
+  def get_co2_scrubber_rating(list, bit_width) do
+
+    get_rating(list, bit_width, &sort_for_least_common_or_zero/1)
+  end
+
+  def get_oxygen_generator_rating(list, bit_width) do
+    get_rating(list, bit_width, &sort_for_most_common_or_one/1)
+  end
+
+  defp sort_for_least_common_or_zero({k,v}), do: {length(v),k}
+  defp sort_for_most_common_or_one({k,v}), do: {-length(v),-k}
+
+
 
   def group_by_column_bit(list, column) do
     list
     |> Enum.group_by(fn x -> x &&& (1 <<< column) end)
     |> Map.to_list
     |> Enum.map(fn {k,v} -> {k >>> column, v} end)
-    |> Enum.sort_by(fn {_k,v} -> -length(v) end)
   end
 
   def binary_strings_to_int(list), do: list |> Enum.map(fn x -> String.to_integer(x,2) end)
