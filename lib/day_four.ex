@@ -53,11 +53,9 @@ defmodule DayFour do
     |> Enum.reduce_while(cards, &process_draw_for_loss/2)
   end
 
-
   def process_draw_for_loss(draw, cards) do
     Enum.map(cards, fn card -> stamp(card, draw) end)
     |> process_stamped_cards_for_loss(draw)
-
   end
 
   def process_stamped_cards_for_loss(stamped_cards, draw) do
@@ -112,7 +110,6 @@ defmodule DayFour do
 
     card_sum * draw
   end
-
 
   def stamp(card, draw) do
     card

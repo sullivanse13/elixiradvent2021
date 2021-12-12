@@ -26,30 +26,31 @@ defmodule DayFourTest do
   @one_stamp_card [[{10, :o}, {2, :o}], [{11, :x}, {4, :o}]]
 
   test "process until last card wins" do
-    test = """
-    1,2,3,4,5,6
+    test =
+      """
+      1,2,3,4,5,6
 
-    1 2
-    3 4
+      1 2
+      3 4
 
-    1 4
-    2 8
+      1 4
+      2 8
 
-    1 6
-    8 9
-    """
-    |> String.split(~r/\n\n/, trim: true)
-    |> Enum.map(&String.trim/1)
-    |> parse_string_groups
+      1 6
+      8 9
+      """
+      |> String.split(~r/\n\n/, trim: true)
+      |> Enum.map(&String.trim/1)
+      |> parse_string_groups
 
     assert process_draws_to_last_card_win(test) ==
-           {6, [
-               [{1, :x}, {6, :x}],
-               [{8, :o}, {9, :o}],
-               [{1, :x}, {8, :o}],
-               [{6, :x}, {9, :o}]
-             ]
-           }
+             {6,
+              [
+                [{1, :x}, {6, :x}],
+                [{8, :o}, {9, :o}],
+                [{1, :x}, {8, :o}],
+                [{6, :x}, {9, :o}]
+              ]}
   end
 
   test "play part 2 for loss" do
@@ -57,7 +58,6 @@ defmodule DayFourTest do
     |> then(fn score -> "Last winning score for part 2: #{score}\n" end)
     |> IO.puts()
   end
-
 
   test "find worst card" do
     assert play_for_loss("priv/day_four_test_input.txt") == 1924
