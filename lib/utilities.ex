@@ -1,6 +1,13 @@
 defmodule Utilities do
   @moduledoc false
 
+
+  def parse_string_to_int_list(string, delimiter \\ ~r/,/) do
+    string
+    |> String.split(delimiter)
+    |> Enum.map(&String.to_integer/1)
+  end
+
   def read_file_to_list_of_strings(file_name) do
     file_name
     |> File.stream!()
