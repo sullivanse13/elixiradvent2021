@@ -1,6 +1,7 @@
 defmodule DaySixTest do
   use ExUnit.Case
   import DaySix
+  import TestHelpers
 
   @docp """
   TDD todo list
@@ -37,6 +38,11 @@ defmodule DaySixTest do
         == [{2,5}, {5,2}, {7,2}]
       assert decrement_all_buckets([{7,5}, {5,2}, {0,3}])
                                                  == [ {4,2}, {6,8}, {8,3}]
+  end
+
+  test "buckets in map" do
+    to_map([3,4,3,1,2])
+      |> assert_map_equal(%{1=>1,2=>1,3=>2,4=>1})
   end
 
   test "turned parse list into bucketss" do

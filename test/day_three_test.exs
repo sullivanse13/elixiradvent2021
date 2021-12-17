@@ -75,12 +75,6 @@ defmodule DayThreeTest do
     assert actual == expected
   end
 
-  defp assert_map_equal(actual, expected) do
-    assert is_map(actual)
-    assert Map.keys(expected) == Map.keys(actual)
-    assert expected == actual
-  end
-
   test "part 1 output" do
     x = power_consumption_from_file("priv/day_three_input.txt")
 

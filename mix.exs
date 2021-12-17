@@ -11,6 +11,9 @@ defmodule Elixiradvent2021.MixProject do
     ]
   end
 
+  def compiler_paths(:test), do: ["test/helpers"] ++ compiler_paths(:prod)
+  def compiler_paths(_), do: ["lib"]
+
   # Run "mix help compile.app" to learn about applications.
   def application do
     [

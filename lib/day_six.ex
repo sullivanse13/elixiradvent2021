@@ -26,6 +26,11 @@ defmodule DaySix do
   def decrement({0,count}), do: [{6,count}, {8,count}]
   def decrement({days,count}), do: {days-1,count}
 
+  def to_map(list) do
+    list
+    |> Enum.frequencies
+  end
+
   def to_buckets(list) do
     list
     |> Enum.frequencies
