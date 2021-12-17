@@ -19,8 +19,8 @@ defmodule DaySixTest do
   [x] decrement buckets
   [x] decrement zero day buckets
   [x] decrement all buckets
-  [ ] iterate over buckets for n days
-  [ ] speed up algorithm
+  [x] iterate over buckets for n days
+  [x] speed up algorithm
 
   """
 
@@ -48,14 +48,6 @@ defmodule DaySixTest do
     assert decrement({0,3}) == [{6,3},{8,3}]
   end
 
-
-
-
-  test "process buckets for one day" do
-    assert pass_one_day([{5,1},{0,2}]) == [{4,1},{6,2},{8,2}]
-  end
-
-
   test "day six part two output" do
     "priv/day_six_input.txt"
     |> simulate_fish_population_from_file(256)
@@ -70,19 +62,8 @@ defmodule DaySixTest do
     |> IO.puts
   end
 
-  test " process test input for 256 days -> 26984457539 fish" do
+  test "process test input for 256 days -> 26984457539 fish" do
     assert "priv/day_six_test_input.txt" |> simulate_fish_population_from_file(256) == 26984457539
   end
 
-
-  test "when 0 -> produce [6,8]" do
-    assert cycle([0],[]) == [6,8]
-  end
-  test "when not zero -> decrement" do
-    assert cycle([3],[]) == [2]
-  end
-
-  test "run on test list" do
-    assert cycle([2,3,2,0,1],[]) == [1,2,1,6,8,0]
-  end
 end
