@@ -1,6 +1,14 @@
 defmodule Utilities do
   @moduledoc false
 
+  def parse_single_line_to_int_list(file_name) do
+    file_name
+    |> File.stream!()
+    |> Stream.map(&String.trim/1)
+    |> Stream.map(&parse_string_to_int_list/1)
+    |> Enum.to_list
+    |> List.flatten
+  end
 
   def parse_string_to_int_list(string, delimiter \\ ~r/,/) do
     string

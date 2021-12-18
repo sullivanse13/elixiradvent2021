@@ -2,7 +2,6 @@ defmodule TestHelpers do
   @moduledoc false
   import ExUnit.Assertions
 
-
   def assert_map_equal(actual, expected) do
     assert is_map(actual)
     assert Map.keys(expected) == Map.keys(actual)
