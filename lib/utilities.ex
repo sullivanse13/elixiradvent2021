@@ -1,6 +1,13 @@
 defmodule Utilities do
   @moduledoc false
 
+
+  def parse_file_lines_with(file_name, func) do
+    file_name
+    |> read_file_to_list_of_strings
+    |> Stream.map(fn line -> func.(line) end)
+  end
+
   def parse_single_line_to_int_list(file_name) do
     file_name
     |> File.stream!()
