@@ -9,22 +9,27 @@ defmodule DaySeven do
 
 
   def calculate_minimal_fuel_to_align(crabs) do
-    crabs = Enum.sort(crabs)
 
     {min, max} = Enum.min_max(crabs)
 
+    fuel_for_distance = pre_calc_distance_sums(min,max)
+
     min..max
-    |> Stream.map(fn pos -> calculate_fuel_to_move_all_crabs(crabs, pos) end)
+    |> Stream.map(fn pos -> calculate_fuel_to_move_all_crabs(crabs, pos, fuel_for_distance) end)
     |> Enum.min
 
   end
 
+  def pre_calc_distance_sums(min,max) do
+    0..(max-min)
+    |> Enum.map(fn distance -> Enum.sum(0..distance) end)
+    |> List.to_tuple
+  end
 
-
-  def calculate_fuel_to_move_all_crabs(crabs, position) do
+  def calculate_fuel_to_move_all_crabs(crabs, position, distance_sums ) do
     crabs
     |> Stream.map(fn crab_pos -> abs(position - crab_pos) end)
-    |> Stream.map(fn distance -> Enum.sum(0..distance) end)
+    |> Stream.map(fn distance -> elem(distance_sums, distance) end)
     |> Enum.sum
 
   end

@@ -15,10 +15,22 @@ defmodule DaySevenTest do
   @test_crabs [16, 1, 2, 0, 4, 2, 7, 1, 2, 14]
 
   test "day seven part 2" do
-    "priv/day_seven_input.txt"
-    |> calculate_fuel_from_file
+    value = "priv/day_seven_input.txt" |> calculate_fuel_from_file
+    assert 95851339 == value
+
+    value
     |> then(&"fuel used for day 7 part 2 #{&1}\n")
     |> IO.puts()
+  end
+
+
+
+  test "pre_calc_fuel_for_distance" do
+
+    assert pre_calc_distance_sums(0,1) == {0,1}
+    assert pre_calc_distance_sums(0,4) ==
+             {0,1,3,6,10}
+             #0,1,2,3,4
   end
 
   test "calc fuel for optimal" do
@@ -32,15 +44,15 @@ defmodule DaySevenTest do
   end
 
   test "calculate fuel used complicated" do
-    assert calculate_fuel_to_move_all_crabs([1, 5], 3) == 6
-    assert calculate_fuel_to_move_all_crabs(@test_crabs, 5) == 168
+    assert calculate_fuel_to_move_all_crabs([1, 5], 3, pre_calc_distance_sums(1,5)) == 6
+    assert calculate_fuel_to_move_all_crabs(@test_crabs, 5, pre_calc_distance_sums(0,16)) == 168
   end
-
-  test "calculate fuel used for move part 2 simple" do
-    assert calculate_fuel_to_move_all_crabs([1, 3], 2) == 2
-    assert calculate_fuel_to_move_all_crabs([1, 1, 1], 1) == 0
-    assert calculate_fuel_to_move_all_crabs([1, 2], 1) == 1
-  end
+#
+#  test "calculate fuel used for move part 2 simple" do
+#    assert calculate_fuel_to_move_all_crabs([1, 3], 2) == 2
+#    assert calculate_fuel_to_move_all_crabs([1, 1, 1], 1) == 0
+#    assert calculate_fuel_to_move_all_crabs([1, 2], 1) == 1
+#  end
 
   test "day seven part 1" do
     "priv/day_seven_input.txt"
