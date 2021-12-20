@@ -8,5 +8,4 @@ defmodule UtilitiesTest do
 
 
   """
-
 end
