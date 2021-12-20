@@ -2,6 +2,11 @@ defmodule TestHelpers do
   @moduledoc false
   import ExUnit.Assertions
 
+  def assert_content_equal(actual, expected) do
+    assert Enum.sort(actual) == Enum.sort(expected)
+    actual
+  end
+
   def assert_map_equal(actual, expected) do
     assert is_map(actual)
     assert Map.keys(expected) == Map.keys(actual)
