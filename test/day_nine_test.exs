@@ -8,8 +8,9 @@ defmodule DayNineTest do
   TDD todo list
   [ ]
 
-  [ ] get coordinates of lowest
-  [ ] get neighbor coordinates
+  [x] get coordinates of lowest
+  [x] get neighbor coordinates
+  [ ] build basin from low point
   [ ] recurse on coords until hit 9s
   [ ] get basin size from lowest points
   [ ] get three largest basins
@@ -17,10 +18,29 @@ defmodule DayNineTest do
   [ ]
   """
 
+  test "build basin" do
+    grid = "priv/day_nine_test_input.txt" |> build_grid()
+
+    {0,1}
+    |> build_basin(grid, MapSet.new([{0,1}]))
+    |> assert_equal(MapSet.new([{0,0},{0,1},{1,0}]))
+
+
+    zero_row = for x <-9..5, do: {x,0}
+
+    expected = zero_row ++ [{9,1},{8,1},{6,1},{9,2}]
+
+
+    {9,0}
+    |> build_basin(grid, MapSet.new([{9,0}]))
+    |> assert_equal(MapSet.new(expected))
+  end
+
+
 #  test "get low point coordinates from grid" do
 #    "priv/day_nine_test_input.txt"
 #    |> get_low_point_coordinates
-#    |> assert_equals([{1, 0}, {9, 0}, {2, 2}, {6, 4}])
+#    |> assert_equal([{1, 0}, {9, 0}, {2, 2}, {6, 4}])
 #  end
 
   test "part 1 output" do
@@ -55,7 +75,7 @@ defmodule DayNineTest do
     345
     678
     """
-    |> build_grid
+    |> DayNine.Grid.new()
   end
 
   test "get number and neighbors from grid 0,0" do
@@ -78,7 +98,7 @@ defmodule DayNineTest do
     11
     """
 
-    assert build_grid(input_string) == %DayNine.Grid{h: 2, w: 2, grid: {{0, 1}, {1, 1}}}
+    assert DayNine.Grid.new(input_string) == %DayNine.Grid{h: 2, w: 2, grid: {{0, 1}, {1, 1}}}
   end
 
   # day one
