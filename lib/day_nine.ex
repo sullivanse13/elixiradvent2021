@@ -6,7 +6,7 @@ defmodule DayNine do
     |> DayNine.Grid.new()
   end
 
-  def find_low_spots_heights(file_name) do
+  def calculate_risk_for_low_spots(file_name) do
     grid = file_name |> File.read!() |> DayNine.Grid.new()
 
     coords = for x <- 0..(grid.w - 1), y <- 0..(grid.h - 1), do: {x, y}
@@ -37,6 +37,15 @@ defmodule DayNine do
       %__MODULE__{grid: grid, h: tuple_size(grid), w: tuple_size(elem(grid, 0))}
     end
 
+    def get_cell_and_neighbors(%__MODULE__{grid: grid, h: height, w: width}, x, y) do
+
+      neighbor_coords = calculate_neighbors(x, y, height, width)
+
+      neighbor_values = neighbor_coords |> Enum.map(fn coords -> get(grid, coords) end)
+
+      %{value: get(grid, x, y), neighbor_values: neighbor_values, coord: {x,y}, neighbor_coord: neighbor_coords}
+    end
+
     def get_number_and_neighbors(%__MODULE__{grid: grid, h: height, w: width}, x, y) do
       neighbors =
         calculate_neighbors(x, y, height, width)
@@ -56,6 +65,10 @@ defmodule DayNine do
 
     defp get(grid, {x, y}), do: get(grid, x, y)
     defp get(grid, x, y), do: grid |> elem(y) |> elem(x)
+
+    def coord_set(%__MODULE__{grid: grid}) do
+      for x <- 0..(grid.w - 1), y <- 0..(grid.h - 1), do: {x, y}
+    end
 
     defp parse_line(string) do
       string

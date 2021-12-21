@@ -8,12 +8,24 @@ defmodule DayNineTest do
   TDD todo list
   [ ]
 
-
+  [ ] get coordinates of lowest
+  [ ] get neighbor coordinates
+  [ ] recurse on coords until hit 9s
+  [ ] get basin size from lowest points
+  [ ] get three largest basins
+  [ ] recursively build basin from lowest
+  [ ]
   """
 
-  test "" do
+#  test "get low point coordinates from grid" do
+#    "priv/day_nine_test_input.txt"
+#    |> get_low_point_coordinates
+#    |> assert_equals([{1, 0}, {9, 0}, {2, 2}, {6, 4}])
+#  end
+
+  test "part 1 output" do
     "priv/day_nine_input.txt"
-    |> find_low_spots_heights
+    |> calculate_risk_for_low_spots
     |> assert_equal(417)
     |> then(&"day nine part 1 risk #{&1}\n")
     |> IO.puts()
@@ -21,7 +33,7 @@ defmodule DayNineTest do
 
   test "find lows for test input" do
     "priv/day_nine_test_input.txt"
-    |> find_low_spots_heights
+    |> calculate_risk_for_low_spots
     |> assert_equals(15)
   end
 
