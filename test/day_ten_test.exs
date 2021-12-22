@@ -6,17 +6,43 @@ defmodule DayTenTest do
   @docp """
   TDD todo list
   [ ]
-  [x] parse lines
-  [x] parse uncorrupted line
-  [x] find first incorrect closing character
-  [ ] score incorrect characters
+
+  [ ] find median score from file
+  [x] figure out symbols to close incomplete lines
+  [x] score missing symbols list
   """
+
+  test "find median score from test file" do
+    assert median_incomplete_score("priv/day_ten_test_input.txt") == 288957
+  end
+
+  test "day 10 part 2" do
+    "priv/day_ten_input.txt"
+    |> median_incomplete_score
+    |> then(&"Day 10 part 2 output: #{&1}\n")
+    |> IO.puts()
+  end
+
+  test "calc incomplete score" do
+    assert incomplete_score([")"], 0) == 1
+    assert incomplete_score(["]"], 0) == 2
+    assert incomplete_score(["}"], 2) == 13
+    assert incomplete_score([">"], 0) == 4
+    assert incomplete_score([">"], 1) == 9
+  end
+
+  test "find incomplete symbol" do
+    assert find_incorrect("({}") == [")"]
+    assert find_incorrect("({<>") == ["}", ")"]
+    assert find_incorrect("[({(<(())[]>[[{[]{<()<>>") == String.codepoints("}}]])})]")
+    assert find_incorrect("[({(<(())[]>[[{[]{<()<>>") == String.codepoints("}}]])})]")
+  end
 
   test "day 10 part one" do
     "priv/day_ten_input.txt"
     |> score
     |> then(&"Day 10 part 1 output: #{&1}\n")
-    |> IO.puts
+    |> IO.puts()
   end
 
   test "score test file" do
@@ -42,4 +68,10 @@ defmodule DayTenTest do
     assert find_incorrect("{([(<{}[<>[]}>{[]{[(<()>") == "}"
     assert find_incorrect("[[<[([]))<([[{}[[()]]]") == ")"
   end
+
+  #  part 1
+  #  [x] parse lines
+  #  [x] parse uncorrupted line
+  #  [x] find first incorrect closing character
+  #  [x] score incorrect characters in file
 end
