@@ -6,6 +6,12 @@ defmodule UtilitiesTest do
   TDD todo list
   [ ]
 
-
+  [ ] parse lines
+  [ ] find first incorrect closing character
+  [ ]
   """
+
+  #  test "write day" do
+  #    assert make_day("ten") == :ok
+  #  end
 end

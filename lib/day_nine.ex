@@ -18,7 +18,6 @@ defmodule DayNine do
   end
 
   def build_basin({x, y}, grid, basin) do
-
     basin_neighbors = get_basin_neighbors(grid, x, y, basin)
 
     basin = add_neighbors_into_basin(basin_neighbors, basin)
@@ -29,7 +28,7 @@ defmodule DayNine do
 
   defp get_basin_neighbors(grid, x, y, basin) do
     grid
-    |> DayNine.Grid.get_neighbor_coords_and_values(x,y)
+    |> DayNine.Grid.get_neighbor_coords_and_values(x, y)
     |> Stream.filter(fn {value, _coord} -> value < 9 end)
     |> Stream.reject(fn {_value, coord} -> MapSet.member?(basin, coord) end)
     |> Stream.map(fn {_value, coord} -> coord end)
@@ -92,10 +91,14 @@ defmodule DayNine do
     def get_cell_and_neighbors(%__MODULE__{grid: grid, h: height, w: width}, {x, y}) do
       neighbor_coord = calculate_neighbors(x, y, height, width)
 
-      neighbor_values =
-         neighbor_coord |> Enum.map(fn coords -> get(grid, coords) end)
+      neighbor_values = neighbor_coord |> Enum.map(fn coords -> get(grid, coords) end)
 
-      %{value: get(grid, x, y), neighbor_values: neighbor_values, coord: {x, y}, neighbor_coord: neighbor_coord }
+      %{
+        value: get(grid, x, y),
+        neighbor_values: neighbor_values,
+        coord: {x, y},
+        neighbor_coord: neighbor_coord
+      }
     end
 
     def get_neighbor_coords_and_values(%__MODULE__{grid: grid, h: height, w: width}, x, y) do
@@ -104,8 +107,8 @@ defmodule DayNine do
     end
 
     def calculate_neighbors(x, y, height, width) do
-      row_neighbors = build_coords(x, width, fn nx -> {nx,y} end)
-      vert_neighbors = build_coords(y, height, fn ny -> {x,ny} end)
+      row_neighbors = build_coords(x, width, fn nx -> {nx, y} end)
+      vert_neighbors = build_coords(y, height, fn ny -> {x, ny} end)
 
       row_neighbors ++ vert_neighbors
     end

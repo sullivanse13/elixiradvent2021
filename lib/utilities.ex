@@ -1,6 +1,44 @@
 defmodule Utilities do
   @moduledoc false
 
+  def make_day(day) do
+    capitalized_day = String.capitalize(day)
+
+    day_module = """
+    defmodule Day#{capitalized_day} do
+      @moduledoc false
+
+    end
+    """
+
+    "lib/day_#{day}.ex"
+    |> File.write!(day_module)
+
+    test_module = """
+    defmodule Day#{capitalized_day}Test do
+      use ExUnit.Case, async: true
+      import Day#{capitalized_day}
+      import TestHelpers
+
+      @docp \"""
+      TDD todo list
+      [ ]
+      [ ]
+      \"""
+
+      test " " do
+
+      end
+    end
+    """
+
+    "test/day_#{day}_test.exs"
+    |> File.write!(test_module)
+
+    "priv/day_#{day}_input.txt" |> File.touch!()
+    "priv/day_#{day}_test_input.txt" |> File.touch!()
+  end
+
   def parse_file_lines_with(file_name, func) do
     file_name
     |> read_file_to_list_of_strings
