@@ -10,38 +10,43 @@ defmodule DayNineTest do
 
   [x] get coordinates of lowest
   [x] get neighbor coordinates
-  [ ] build basin from low point
-  [ ] recurse on coords until hit 9s
-  [ ] get basin size from lowest points
-  [ ] get three largest basins
-  [ ] recursively build basin from lowest
+  [x] build basin from low point
+  [x] recurse on coords until hit 9s
+  [x] get basin size from lowest points
+  [x] get three largest basins
+  [x] recursively build basin from lowest
   [ ]
   """
 
   test "build basin" do
     grid = "priv/day_nine_test_input.txt" |> build_grid()
 
-    {0,1}
-    |> build_basin(grid, MapSet.new([{0,1}]))
-    |> assert_equal(MapSet.new([{0,0},{0,1},{1,0}]))
+    {0, 1}
+    |> build_basin(grid, MapSet.new([{0, 1}]))
+    |> assert_equal(MapSet.new([{0, 0}, {0, 1}, {1, 0}]))
 
+    zero_row = for x <- 9..5, do: {x, 0}
 
-    zero_row = for x <-9..5, do: {x,0}
+    expected = zero_row ++ [{9, 1}, {8, 1}, {6, 1}, {9, 2}]
 
-    expected = zero_row ++ [{9,1},{8,1},{6,1},{9,2}]
-
-
-    {9,0}
-    |> build_basin(grid, MapSet.new([{9,0}]))
+    {9, 0}
+    |> build_basin(grid, MapSet.new([{9, 0}]))
     |> assert_equal(MapSet.new(expected))
   end
 
+  test "part 2 output" do
+    "priv/day_nine_input.txt"
+    |> multiply_basins
+    |> assert_equals(1_148_965)
+    |> then(&"day nine part 2 (3 basin product) #{&1}\n")
+    |> IO.puts()
+  end
 
-#  test "get low point coordinates from grid" do
-#    "priv/day_nine_test_input.txt"
-#    |> get_low_point_coordinates
-#    |> assert_equal([{1, 0}, {9, 0}, {2, 2}, {6, 4}])
-#  end
+  test "get low point coordinates from grid" do
+    "priv/day_nine_test_input.txt"
+    |> multiply_basins
+    |> assert_equal(1134)
+  end
 
   test "part 1 output" do
     "priv/day_nine_input.txt"
@@ -67,29 +72,6 @@ defmodule DayNineTest do
 
     calculate_neighbors(2, 2, 3, 3)
     |> assert_content_equal([{1, 2}, {2, 1}])
-  end
-
-  defp test_grid() do
-    """
-    012
-    345
-    678
-    """
-    |> DayNine.Grid.new()
-  end
-
-  test "get number and neighbors from grid 0,0" do
-    test_grid()
-    |> get_number_and_neighbors(0, 0)
-    |> assert_equal({0, [1, 3]})
-  end
-
-  test "get number and neighbors from grid center" do
-    {4, neighbors} =
-      test_grid()
-      |> get_number_and_neighbors(1, 1)
-
-    assert_content_equal(neighbors, [1, 3, 5, 7])
   end
 
   test "build grid" do
