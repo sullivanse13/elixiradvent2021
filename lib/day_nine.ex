@@ -61,6 +61,13 @@ defmodule DayNine do
       %__MODULE__{grid: grid, h: tuple_size(grid), w: tuple_size(elem(grid, 0))}
     end
 
+    defp parse_line(string) do
+      string
+      |> String.codepoints()
+      |> Enum.map(&String.to_integer/1)
+      |> List.to_tuple()
+    end
+
     def get_low_points(%__MODULE__{} = grid) do
       grid
       |> DayNine.Grid.coordinates()
