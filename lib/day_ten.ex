@@ -1,13 +1,12 @@
 defmodule DayTen do
   @moduledoc false
 
-
   def median_incomplete_score(file_name) do
     file_name
     |> Utilities.parse_file_lines_with(&find_incorrect/1)
     |> Stream.filter(&is_list(&1))
-    |> Stream.map(&incomplete_score(&1,0))
-    |> Enum.sort
+    |> Stream.map(&incomplete_score(&1, 0))
+    |> Enum.sort()
     |> then(fn list -> Enum.at(list, div(length(list), 2)) end)
   end
 

@@ -13,7 +13,7 @@ defmodule DayTenTest do
   """
 
   test "find median score from test file" do
-    assert median_incomplete_score("priv/day_ten_test_input.txt") == 288957
+    assert median_incomplete_score("priv/day_ten_test_input.txt") == 288_957
   end
 
   test "day 10 part 2" do

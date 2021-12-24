@@ -1,75 +1,130 @@
 defmodule DayEleven do
   @moduledoc false
 
-
-  def part_1(file_name) do
-
+  def part_1(_file_name) do
   end
 
-  def part_2(file_name) do
-
+  def part_2(_file_name) do
   end
 
   defmodule Grid do
-    defstruct h: 0, w: 0, elements: []
+    defstruct h: 0, w: 0, elements: %{}
+
+    def new(lists) when is_list(lists) do
+      h = length(lists)
+      w = length(hd(lists))
+
+      lists
+      |> Enum.map(&into_index_map/1)
+      |> into_index_map
+      |> then(&%__MODULE__{elements: &1, h: h, w: w})
+    end
 
     def new(string) do
       grid =
         string
         |> String.split(~r/\n/, trim: true)
         |> Enum.map(&parse_line/1)
+        |> into_index_map
 
-      %__MODULE__{elements: grid, h: length(grid), w: length(Enum.at(grid, 0))}
+      %__MODULE__{elements: grid, h: Enum.count(grid), w: Enum.count(grid[0])}
     end
 
-    def find_tens(%__MODULE{} = grid) do
+    def to_lists(%__MODULE{} = grid) do
       grid.elements
-      |> Enum.with_index
-      |> Enum.map(&get_ten_coords_from_row/1)
-      |> List.flatten
+      |> Map.values()
+      |> Enum.map(&Map.values/1)
     end
 
-    def get_ten_coords_from_row({row, row_index}) do
-      row
-      |> Enum.with_index
-      |> Enum.filter(fn {element, indx} -> element == 10 end)
-      |> Enum.map(fn {element, indx} -> {indx, row_index} end)
-    end
-
-    def tick(%__MODULE{} = grid) do
-      struct(grid, elements: Enum.map((grid.elements), &plus_one/1))
-    end
-
-    defp plus_one(list), do: Enum.map(list, fn x -> x+1 end)
-
-    def increment_elements(%__MODULE{} = grid, positions) do
-      positions
-      |> Enum.group_by(fn {_x,y} -> y end, fn {x,_y} -> x end)
-      |> increment_grid_coordinates(grid.elements)
-      |> then(fn new_elements -> struct(grid, elements: new_elements) end)
-    end
-
-    defp increment_grid_coordinates(coordinates, grid_elements) do
-      coordinates
-        |> Map.to_list
-        |> Enum.reduce(grid_elements, &update_row/2)
-    end
-
-    defp update_row({row_index, columns_to_update}, elements) do
-      row_to_update = elements |> Enum.at(row_index)
-
-      updated_row =
-        columns_to_update
-        |> Enum.reduce(row_to_update, fn index, row -> List.update_at(row, index, &(&1 + 1)) end)
-
-      List.replace_at(elements, row_index, updated_row)
+    defp into_index_map(list) do
+      list
+      |> Enum.with_index(fn element, index -> {index, element} end)
+      |> Enum.into(%{})
     end
 
     defp parse_line(string) do
       string
       |> String.codepoints()
       |> Enum.map(&String.to_integer/1)
+      |> into_index_map
     end
 
+    def cycle_and_count_flashes(%__MODULE{} = grid) do
+      grid
+      |> tick()
+      |> find_10s_increment_neighbors(0)
+    end
+
+    def find_10s_increment_neighbors(grid, acc) do
+      ten_coords = grid |> find_tens_coords
+
+      neighbors_ticked = increment_tens_neighbors(grid, ten_coords)
+
+      new_grid = neighbors_ticked |> reset_tens(ten_coords)
+
+      {new_grid, Enum.count(ten_coords)}
+    end
+
+    def increment_tens_neighbors(grid, tens) do
+      ten_neighbors =
+        tens
+        |> Enum.map(fn x -> neighbors(grid, x) end)
+        |> List.flatten()
+        |> Enum.concat(tens)
+
+      grid
+      |> increment_elements(ten_neighbors)
+    end
+
+    defp reset_tens(%__MODULE{} = grid, coords) do
+      new_grid = Enum.reduce(coords, grid.elements, &reset/2)
+
+      struct(grid, elements: new_grid)
+    end
+
+    def reset({x, y}, elements) do
+      put_in(elements[y][x], 0)
+    end
+
+    def neighbors(%__MODULE{} = grid, {x1, y1}) do
+      x_range = range(x1, grid.w)
+      y_range = range(y1, grid.h)
+      for x <- x_range, y <- y_range, !(x == x1 and y == y1), do: {x, y}
+    end
+
+    defp range(n, max) do
+      max(n - 1, 0)..min(n + 1, max - 1)
+    end
+
+    def tick(%__MODULE{} = grid) do
+      coords = for x <- 0..(grid.w - 1), y <- 0..(grid.h - 1), do: {x, y}
+      increment_elements(grid, coords)
+    end
+
+    def increment_elements(%__MODULE{} = grid, coords_to_increment) do
+      new_grid = Enum.reduce(coords_to_increment, grid.elements, &increment/2)
+
+      struct(grid, elements: new_grid)
+    end
+
+    def increment({x, y}, elements) do
+      if elements[y][x] != 10 do
+        update_in(elements[y][x], &(&1 + 1))
+      end
+    end
+
+    def find_tens_coords(%__MODULE{} = grid) do
+      grid.elements
+      |> Map.to_list()
+      |> Enum.map(&get_ten_coordinates_from_row/1)
+      |> List.flatten()
+    end
+
+    defp get_ten_coordinates_from_row({y, row}) do
+      row
+      |> Map.filter(fn {_k, v} -> v >= 10 end)
+      |> Map.keys()
+      |> Enum.map(fn x -> {x, y} end)
+    end
   end
 end

@@ -1,7 +1,6 @@
 defmodule Utilities do
   @moduledoc false
 
-
   def parse_file_lines_with(file_name, func) do
     file_name
     |> read_file_to_list_of_strings
@@ -35,7 +34,6 @@ defmodule Utilities do
     |> String.split(~r/\n\n/)
   end
 
-
   defp method(day, part) do
     """
     test "day #{day} part #{part}" do
@@ -50,7 +48,6 @@ defmodule Utilities do
       end
     """
   end
-
 
   def make_day(day) do
     capitalized_day = String.capitalize(day)
@@ -104,6 +101,5 @@ defmodule Utilities do
 
     "test/day_#{day}_test.exs"
     |> File.write!(test_module)
-
   end
 end
