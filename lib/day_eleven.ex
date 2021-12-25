@@ -49,6 +49,28 @@ defmodule DayEleven do
       |> into_index_map
     end
 
+    def cycle_and_flash(%__MODULE__{} = grid) do
+      grid
+      |> tick()
+      |> flash_tens()
+#      |> increment_flash_neighbors()
+    end
+
+    def flash_tens(%__MODULE__{} = grid) do
+      elements = grid.elements
+      |> Map.map(&flash_row/1)
+
+      struct(grid, elements: elements )
+    end
+
+    def flash_row({y, row}) do
+      row
+      |> Map.map(&flash(&1, y))
+    end
+
+    def flash({_x,10}, _y), do: :flash
+    def flash({_k,v}, _y), do: v
+
     def cycle_and_count_flashes(%__MODULE{} = grid) do
       grid
       |> tick()

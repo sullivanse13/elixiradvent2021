@@ -17,58 +17,86 @@ defmodule DayElevenTest do
   [x] calculate neighbors 1,1
   [x] calculate neighbors 0,0
   [x] calculate neighbors 2,2
-  [x] count flashes in cycle no flash
-  [x] count flashes in cycle one square flash
+  [ ]
+  [ ] count flashes in cycle no flash
+  [ ] count flashes in cycle one square flash
   [ ] count flashes in cycle one square and one neighbor
   [ ] count flashes in cycle whole board ripple
   [ ] reset 10s to zero
   [ ] keep running total of flashes
   """
 
-#  test "count flashes in cycle one square and one neighbor" do
-#    {grid, count} =
-#      [[1, 2, 3], [4, 9, 5], [6, 6, 8]]
-#      |> new()
-#      |> cycle_and_count_flashes()
-#
-#    assert count == 2
-#
-#    assert to_lists(grid) == [
-#             [3, 4, 5],
-#             [6, 0, 8],
-#             [8, 9, 0]
-#           ]
-#  end
 
-  test " count flashes in cycle no flash" do
-    {grid, count} =
-      [[1, 2, 3], [4, 9, 5], [6, 7, 7]]
-      |> new()
-      |> cycle_and_count_flashes()
 
-    assert count == 1
 
-    assert to_lists(grid) == [
-             [3, 4, 5],
-             [6, 0, 7],
-             [8, 9, 9]
-           ]
+  test "cycle and flash one flash" do
+    [[1, 2, 3], [4, 9, 5], [6, 7, 7]]
+    |> new()
+    |> cycle_and_flash()
+    |> to_lists
+    |> assert_equal([
+      [2, 3, 4],
+      [5, :flash, 6],
+      [7, 8, 8]
+    ])
   end
 
-  test "count flashes in cycle no flash" do
-    {grid, count} =
-      [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
-      |> new()
-      |> cycle_and_count_flashes()
-
-    assert count == 0
-
-    assert to_lists(grid) == [
-             [2, 3, 4],
-             [5, 6, 7],
-             [8, 9, 1]
-           ]
+  test "cycle and flash  no flash" do
+    [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+    |> new()
+    |> cycle_and_flash()
+    |> to_lists
+    |> assert_equal([
+      [2, 3, 4],
+      [5, 6, 7],
+      [8, 9, 1]
+    ])
   end
+
+  #  test "count flashes in cycle one square and one neighbor" do
+  #    {grid, count} =
+  #      [[1, 2, 3], [4, 9, 5], [6, 6, 8]]
+  #      |> new()
+  #      |> cycle_and_count_flashes()
+  #
+  #    assert count == 2
+  #
+  #    assert to_lists(grid) == [
+  #             [3, 4, 5],
+  #             [6, 0, 8],
+  #             [8, 9, 0]
+  #           ]
+  #  end
+
+  #  test " count flashes in cycle no flash" do
+  #    {grid, count} =
+  #      [[1, 2, 3], [4, 9, 5], [6, 7, 7]]
+  #      |> new()
+  #      |> cycle_and_count_flashes()
+  #
+  #    assert count == 1
+  #
+  #    assert to_lists(grid) == [
+  #             [3, 4, 5],
+  #             [6, 0, 7],
+  #             [8, 9, 9]
+  #           ]
+  #  end
+  #
+  #  test "count flashes in cycle no flash" do
+  #    {grid, count} =
+  #      [[1, 2, 3], [4, 5, 6], [7, 8, 0]]
+  #      |> new()
+  #      |> cycle_and_count_flashes()
+  #
+  #    assert count == 0
+  #
+  #    assert to_lists(grid) == [
+  #             [2, 3, 4],
+  #             [5, 6, 7],
+  #             [8, 9, 1]
+  #           ]
+  #  end
 
   test "calculate neighbors 1,1" do
     ten_grid()
