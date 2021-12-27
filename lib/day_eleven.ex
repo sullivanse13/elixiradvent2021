@@ -1,8 +1,6 @@
 defmodule DayEleven do
   @moduledoc false
 
-  def part_1(_file_name) do
-  end
 
   def part_2(_file_name) do
   end
@@ -37,9 +35,7 @@ defmodule DayEleven do
         |> Map.map(fn {_k, v} -> v + 1 end)
         |> find_10s_increment_neighbors(grid.size)
 
-
-      count = flashed
-        |> Map.values()|> Enum.count(fn x -> x == :flashed end)
+      count = flashed |> Map.values() |> Enum.count(fn x -> x == :flashed end)
 
       tens_reset = Map.map(flashed, &reset/1)
 
@@ -49,25 +45,37 @@ defmodule DayEleven do
     def find_10s_increment_neighbors(new_elements, grid_size) do
       tens = new_elements |> find_10s
 
-      new_elements =
-        Enum.reduce(tens, new_elements, fn coord, elements ->
-          Map.put(elements, coord, :flashed)
-        end)
-
+      if Enum.empty?(tens) do
+        new_elements
+      else
+        flashed_tens = flash_tens(tens, new_elements)
         tens
-        |> Enum.map(fn ten -> neighbors(grid_size, ten) end)
-        |> List.flatten()
-        |> Enum.reduce(new_elements, fn coord, elements ->
-          Map.update!(elements, coord, &flashed/1)
-        end)
-
+        |> increment_tens_neighbors(flashed_tens, grid_size)
+        |> find_10s_increment_neighbors(grid_size)
+      end
     end
 
+    def increment_tens_neighbors(tens, grid_elements, grid_size) do
+      tens
+      |> Enum.map(fn ten -> neighbors(grid_size, ten) end)
+      |> List.flatten()
+      |> Enum.reduce(grid_elements, fn coord, elements ->
+        Map.update!(elements, coord, &increment/1)
+      end)
+    end
+
+    def flash_tens(tens, grid_elements) do
+      tens
+      |> Enum.reduce(grid_elements, fn coord, elements ->
+        Map.put(elements, coord, :flashed)
+      end)
+    end
     def reset({_k, :flashed}), do: 0
     def reset({_k, v}), do: v
 
-    def flashed(:flashed), do: :flashed
-    def flashed(v), do: v + 1
+    def increment(:flashed), do: :flashed
+    def increment(10), do: 10
+    def increment(v), do: v + 1
 
     defp find_10s(elements) do
       elements
@@ -86,4 +94,25 @@ defmodule DayEleven do
       max(n - 1, 0)..min(n + 1, max - 1)
     end
   end
+
+
+  def part_1(file_name) do
+    file_name
+    |> File.read!
+    |> DayEleven.Grid.new
+    |> run_steps(100)
+    |> then(fn {_grid, flash_count} -> flash_count end)
+  end
+
+  defp run_steps(%DayEleven.Grid{} = grid, steps) do
+    1..steps
+    |> Enum.reduce({grid,0}, &step_with_total/2)
+  end
+
+  def step_with_total(_, {%DayEleven.Grid{} = grid, flashes}) do
+    grid
+    |> DayEleven.Grid.step
+    |> then(fn {grid, new_flashes} -> {grid, flashes+new_flashes} end)
+  end
+
 end

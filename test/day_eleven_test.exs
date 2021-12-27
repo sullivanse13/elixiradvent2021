@@ -13,20 +13,87 @@ defmodule DayElevenTest do
   [x] build grid
   [x] increment all elements
   [x] find 10s positions
-  [ ] flash 10s
-  [ ] calculate neighbors 1,1
-  [ ] calculate neighbors 0,0
-  [ ] calculate neighbors 2,2
-  [ ] increment certain elements
-  [ ] count flashes in cycle no flash
-  [ ] count flashes in cycle one square flash
-  [ ] count flashes in cycle one square and one neighbor
-  [ ] count flashes in cycle whole board ripple
-  [ ] reset 10s to zero
-  [ ] keep running total of flashes
+  [x] flash 10s
+  [x] calculate neighbors 1,1
+  [x] calculate neighbors 0,0
+  [x] calculate neighbors 2,2
+  [x] increment neighbors of flash
+  [x] count flashes in step no flash
+  [x] count flashes in step one flash
+  [x] count flashes in step one flash on 10, causing neighbor to flash
+  [x] count flashes in step whole board ripple flashed
+  [x] reset 10s to zero
+  [x] keep running total of flashes for multiple steps
+  [ ] run part_1 test input
   """
+  test "test file part 1" do
+    assert part_1(@test_input) == 1656
+  end
 
-  test "step with one flash and one ten" do
+
+    test "day eleven part 1" do
+      @input
+      |> part_1
+      |> then(&"Day eleven part 1 output: #{&1}\n")
+      |> IO.puts()
+    end
+
+
+
+  test "count flashes in step whole board ripple flashed" do
+    """
+    888
+    818
+    889
+    """
+    |> new()
+    |> step()
+    |> assert_equal(
+         {%DayEleven.Grid{
+           elements: %{
+             {0, 0} => 0,
+             {1, 0} => 0,
+             {2, 0} => 0,
+             {0, 1} => 0,
+             {1, 1} => 0,
+             {2, 1} => 0,
+             {0, 2} => 0,
+             {1, 2} => 0,
+             {2, 2} => 0
+           },
+           size: 3
+         }, 9}
+       )
+  end
+
+
+  test "count flashes in step one flash on 10, causing neighbor to flash" do
+    """
+    123
+    459
+    668
+    """
+    |> new()
+    |> step()
+    |> assert_equal(
+      {%DayEleven.Grid{
+         elements: %{
+           {0, 0} => 2,
+           {1, 0} => 4,
+           {2, 0} => 5,
+           {0, 1} => 5,
+           {1, 1} => 8,
+           {2, 1} => 0,
+           {0, 2} => 7,
+           {1, 2} => 9,
+           {2, 2} => 0
+         },
+         size: 3
+       }, 2}
+    )
+  end
+
+  test "count flashes in step one square flash" do
     """
     123
     459
@@ -68,7 +135,7 @@ defmodule DayElevenTest do
     })
   end
 
-  test "increment grid" do
+  test "step grid" do
     small_test_grid()
     |> step()
     |> assert_equal(
@@ -79,16 +146,7 @@ defmodule DayElevenTest do
     )
   end
 
-  #  test "day eleven part 1" do
-  #    @input
-  #    |> part_1
-  #    |> then(&"Day eleven part 1 output: #{&1}\n")
-  #    |> IO.puts()
-  #  end
-  #
-  #  test "test file part 1" do
-  #    assert part_1(@test_input) == :unset
-  #  end
+
   #
   #  test "day eleven part 2" do
   #    @input
