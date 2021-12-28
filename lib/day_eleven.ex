@@ -1,10 +1,6 @@
 defmodule DayEleven do
   @moduledoc false
 
-
-  def part_2(_file_name) do
-  end
-
   defmodule Grid do
     defstruct size: 0, elements: %{}
 
@@ -42,6 +38,14 @@ defmodule DayEleven do
       {struct(grid, elements: tens_reset), count}
     end
 
+    defp increment_elements(%{})
+
+    def step_no_count(%__MODULE__{} = grid) do
+      grid
+      |> step
+      |> then(&elem(&1, 0))
+    end
+
     def find_10s_increment_neighbors(new_elements, grid_size) do
       tens = new_elements |> find_10s
 
@@ -49,6 +53,7 @@ defmodule DayEleven do
         new_elements
       else
         flashed_tens = flash_tens(tens, new_elements)
+
         tens
         |> increment_tens_neighbors(flashed_tens, grid_size)
         |> find_10s_increment_neighbors(grid_size)
@@ -70,6 +75,7 @@ defmodule DayEleven do
         Map.put(elements, coord, :flashed)
       end)
     end
+
     def reset({_k, :flashed}), do: 0
     def reset({_k, v}), do: v
 
@@ -95,24 +101,45 @@ defmodule DayEleven do
     end
   end
 
+  def part_2(file_name) do
+    file_name
+    |> File.read!()
+    |> DayEleven.Grid.new()
+    |> step_until_all_flash
+  end
+
+  def step_until_all_flash(grid) do
+    grid
+    |> Stream.iterate(&DayEleven.Grid.step_no_count/1)
+    |> Stream.with_index()
+    |> Stream.filter(&is_all_flashed?/1)
+    |> Enum.take(1)
+    |> hd
+    |> then(fn {_grid, idx} -> idx end)
+  end
+
+  def is_all_flashed?({grid, _idx}) do
+    grid.elements
+    |> Map.values()
+    |> Enum.all?(fn v -> v == 0 end)
+  end
 
   def part_1(file_name) do
     file_name
-    |> File.read!
-    |> DayEleven.Grid.new
+    |> File.read!()
+    |> DayEleven.Grid.new()
     |> run_steps(100)
     |> then(fn {_grid, flash_count} -> flash_count end)
   end
 
   defp run_steps(%DayEleven.Grid{} = grid, steps) do
     1..steps
-    |> Enum.reduce({grid,0}, &step_with_total/2)
+    |> Enum.reduce({grid, 0}, &step_with_total/2)
   end
 
   def step_with_total(_, {%DayEleven.Grid{} = grid, flashes}) do
     grid
-    |> DayEleven.Grid.step
-    |> then(fn {grid, new_flashes} -> {grid, flashes+new_flashes} end)
+    |> DayEleven.Grid.step()
+    |> then(fn {grid, new_flashes} -> {grid, flashes + new_flashes} end)
   end
-
 end

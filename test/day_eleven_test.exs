@@ -24,21 +24,31 @@ defmodule DayElevenTest do
   [x] count flashes in step whole board ripple flashed
   [x] reset 10s to zero
   [x] keep running total of flashes for multiple steps
-  [ ] run part_1 test input
+  [x] run part_1 test input
+  [x] part 2 - iterate until all flash
   """
+
+  test "day eleven part 2" do
+    @input
+    |> part_2
+    |> then(&"Day eleven part 2 output: #{&1}\n")
+    |> IO.puts()
+  end
+
+  test "test file part 2" do
+    assert part_2(@test_input) == 195
+  end
+
   test "test file part 1" do
     assert part_1(@test_input) == 1656
   end
 
-
-    test "day eleven part 1" do
-      @input
-      |> part_1
-      |> then(&"Day eleven part 1 output: #{&1}\n")
-      |> IO.puts()
-    end
-
-
+  test "day eleven part 1" do
+    @input
+    |> part_1
+    |> then(&"Day eleven part 1 output: #{&1}\n")
+    |> IO.puts()
+  end
 
   test "count flashes in step whole board ripple flashed" do
     """
@@ -49,23 +59,22 @@ defmodule DayElevenTest do
     |> new()
     |> step()
     |> assert_equal(
-         {%DayEleven.Grid{
-           elements: %{
-             {0, 0} => 0,
-             {1, 0} => 0,
-             {2, 0} => 0,
-             {0, 1} => 0,
-             {1, 1} => 0,
-             {2, 1} => 0,
-             {0, 2} => 0,
-             {1, 2} => 0,
-             {2, 2} => 0
-           },
-           size: 3
-         }, 9}
-       )
+      {%DayEleven.Grid{
+         elements: %{
+           {0, 0} => 0,
+           {1, 0} => 0,
+           {2, 0} => 0,
+           {0, 1} => 0,
+           {1, 1} => 0,
+           {2, 1} => 0,
+           {0, 2} => 0,
+           {1, 2} => 0,
+           {2, 2} => 0
+         },
+         size: 3
+       }, 9}
+    )
   end
-
 
   test "count flashes in step one flash on 10, causing neighbor to flash" do
     """
@@ -145,17 +154,4 @@ defmodule DayElevenTest do
        }, 0}
     )
   end
-
-
-  #
-  #  test "day eleven part 2" do
-  #    @input
-  #    |> part_2
-  #    |> then(&"Day eleven part 2 output: #{&1}\n")
-  #    |> IO.puts()
-  #  end
-  #
-  #  test "test file part 2" do
-  #    assert part_2(@test_input) == :unset
-  #  end
 end
