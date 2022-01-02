@@ -1,7 +1,11 @@
 defmodule DayTwelve do
   @moduledoc false
 
-  def part_1(_file_name) do
+  def part_1(file_name) do
+    file_name
+    |> Utilities.read_file_to_list_of_strings()
+    |> parse_lines
+    |> count_paths
   end
 
   def part_2(_file_name) do
@@ -10,7 +14,6 @@ defmodule DayTwelve do
   def count_paths(connection_map) do
     connection_map
     |> find_paths
-    |> IO.inspect()
     |> Enum.count()
   end
 
@@ -18,15 +21,14 @@ defmodule DayTwelve do
     {start_neighbors, connection_map_no_start} = Map.pop!(connection_map, "start")
 
     {"start", start_neighbors}
-    |> find_path_from(connection_map_no_start, [], MapSet.new())
-    |> List.flatten
+    |> find_path_from(connection_map_no_start, ["start"], MapSet.new())
+    |> List.flatten()
   end
 
   def find_path_from({"end", _}, _connection_map, acc, _no_backtrack_set),
-    do: acc |> Enum.reverse() |> then(&["start" | &1]) |> List.to_tuple
+    do: acc |> Enum.reverse() |> List.to_tuple()
 
   def find_path_from({cave, neighbors}, connection_map, acc, no_backtrack_set) do
-
     no_back_track = keep_backtrack_from_happening(no_backtrack_set, cave)
 
     paths =
