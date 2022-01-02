@@ -10,6 +10,6 @@ defmodule UtilitiesTest do
   """
 
   test "write day" do
-    #    assert make_day("eleven") == :ok
+    #    assert make_day("twelve") == :ok
   end
 end

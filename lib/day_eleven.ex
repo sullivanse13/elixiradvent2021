@@ -38,8 +38,6 @@ defmodule DayEleven do
       {struct(grid, elements: tens_reset), count}
     end
 
-    defp increment_elements(%{})
-
     def step_no_count(%__MODULE__{} = grid) do
       grid
       |> step

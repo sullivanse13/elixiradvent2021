@@ -62,11 +62,11 @@ defmodule Utilities do
     defmodule Day#{capitalized_day} do
       @moduledoc false
 
-      def part_1(file_name) do
+      def part_1(_file_name) do
 
       end
 
-      def part_2(file_name) do
+      def part_2(_file_name) do
 
       end
     end
